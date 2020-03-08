@@ -36,6 +36,17 @@ class DriversTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Driver.objects.count(), 1)
 
+    def test_updating_driver_info(self):
+        driver = baker.make(Driver, name='Chiquinho')
+        patch_url = reverse('drivers-detail', args=[driver.id])
+
+        response = self.client.patch(patch_url, {'name': 'Joãozinho'})
+
+        driver = Driver.objects.get(id=driver.id)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(driver.name, 'Joãozinho')
+
     def test_listing_all_drivers(self):
         drivers = baker.make(Driver, _quantity=2)
         response = self.client.get(DRIVER_URL)
