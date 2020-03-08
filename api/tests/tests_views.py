@@ -3,6 +3,8 @@ from datetime import datetime
 from django.test import TestCase
 from django.urls import reverse
 
+from freezegun import freeze_time
+
 from model_bakery import baker
 
 from rest_framework import status
@@ -137,3 +139,48 @@ class LocationsTestCase(TestCase):
             LocationSerializer(loc3).data,
             response.data[VehicleType.CARRETA_SIMPLES.name]
         )
+
+
+@freeze_time("2020-03-08")
+class CountDriversDaysAgoTestCase(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super(CountDriversDaysAgoTestCase, cls).setUpClass()
+        cls.client = APIClient()
+        cls.drivers = baker.make(Driver, 4)
+        dates = [
+            datetime(year=2020, month=3, day=8),  # today
+            datetime(year=2020, month=3, day=3),  # less than 1 week ago
+            datetime(year=2020, month=2, day=20),  # less than 1 month ago
+            datetime(year=2020, month=2, day=5),  # more than 1 month ago
+        ]
+        for driver, date in zip(cls.drivers, dates):
+            driver.created_at = date.astimezone()
+            driver.save()
+
+    def test_drivers_counter_endpoint_requires_valid_parameter(self):
+        DRIVERS_COUNTER_URL = reverse('drivers-counter', args=['bad_param'])
+        response = self.client.get(DRIVERS_COUNTER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_count_drivers_in_current_day(self):
+        DRIVERS_COUNTER_URL = reverse('drivers-counter', args=['day'])
+        response = self.client.get(DRIVERS_COUNTER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['drivers_counter'], 1)
+
+    def test_count_drivers_in_last_week(self):
+        DRIVERS_COUNTER_URL = reverse('drivers-counter', args=['week'])
+        response = self.client.get(DRIVERS_COUNTER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['drivers_counter'], 2)
+
+    def test_count_drivers_in_last_month(self):
+        DRIVERS_COUNTER_URL = reverse('drivers-counter', args=['month'])
+        response = self.client.get(DRIVERS_COUNTER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['drivers_counter'], 3)
