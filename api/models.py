@@ -12,6 +12,13 @@ class Location(models.Model):
         'Longitude', max_digits=10, decimal_places=7
     )
 
+    class Meta:
+        verbose_name = 'Localidade'
+        verbose_name_plural = 'Localidades'
+
+    def __str__(self):
+        return self.name
+
 
 class Driver(models.Model):
     name = models.CharField('Nome do motorista', max_length=255)
@@ -32,3 +39,10 @@ class Driver(models.Model):
         Location, on_delete=models.SET_NULL, related_name='drivers_destiny',
         null=True
     )
+
+    class Meta:
+        verbose_name = 'Motorista'
+        verbose_name_plural = 'Motoristas'
+
+    def __str__(self):
+        return self.name
