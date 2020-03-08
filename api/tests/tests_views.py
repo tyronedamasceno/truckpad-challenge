@@ -3,12 +3,16 @@ from datetime import datetime
 from django.test import TestCase
 from django.urls import reverse
 
+from model_bakery import baker
+
 from rest_framework import status
 from rest_framework.test import APIClient
 
 from api.models import Driver, Location
+from api.serializers import DriverSerializer
 
 DRIVER_URL = reverse('drivers-list')
+NOT_LOADED_DRIVER_URL = reverse('not-loaded-drivers-list')
 LOCATION_URL = reverse('locations-list')
 
 
@@ -30,6 +34,24 @@ class DriversTestCase(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Driver.objects.count(), 1)
+
+    def test_listing_all_drivers(self):
+        drivers = baker.make(Driver, _quantity=2)
+        response = self.client.get(DRIVER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for driver in drivers:
+            self.assertIn(DriverSerializer(driver).data, response.data)
+
+    def test_listing_all_non_loaded_drivers(self):
+        driver1 = baker.make(Driver, is_loaded=True)
+        driver2 = baker.make(Driver, is_loaded=False)
+
+        response = self.client.get(NOT_LOADED_DRIVER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn(DriverSerializer(driver1).data, response.data)
+        self.assertIn(DriverSerializer(driver2).data, response.data)
 
 
 class LocationsTestCase(TestCase):
