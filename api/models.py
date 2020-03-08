@@ -13,6 +13,7 @@ class Location(models.Model):
     )
 
     class Meta:
+        unique_together = ['latitude', 'longitude']
         verbose_name = 'Localidade'
         verbose_name_plural = 'Localidades'
 
