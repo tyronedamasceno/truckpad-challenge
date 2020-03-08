@@ -13,6 +13,7 @@ from api.serializers import DriverSerializer
 
 DRIVER_URL = reverse('drivers-list')
 NOT_LOADED_DRIVER_URL = reverse('not-loaded-drivers-list')
+OWN_VEHICLE_DRIVER_URL = reverse('own-vehicle-drivers-list')
 LOCATION_URL = reverse('locations-list')
 
 
@@ -52,6 +53,16 @@ class DriversTestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotIn(DriverSerializer(driver1).data, response.data)
         self.assertIn(DriverSerializer(driver2).data, response.data)
+
+    def test_listing_all_drivers_with_own_vehicles(self):
+        driver1 = baker.make(Driver, owns_vehicle=True)
+        driver2 = baker.make(Driver, owns_vehicle=False)
+
+        response = self.client.get(OWN_VEHICLE_DRIVER_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn(DriverSerializer(driver1).data, response.data)
+        self.assertNotIn(DriverSerializer(driver2).data, response.data)
 
 
 class LocationsTestCase(TestCase):
