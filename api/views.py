@@ -9,7 +9,9 @@ class DriverViewSet(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
 
 
-class LocationViewSet(viewsets.ModelViewSet):
+class LocationViewSet(mixins.ListModelMixin,
+                      mixins.CreateModelMixin,
+                      mixins.RetrieveModelMixin, viewsets.GenericViewSet):
     serializer_class = LocationSerializer
     queryset = Location.objects.all()
 
