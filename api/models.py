@@ -28,6 +28,7 @@ class Driver(models.Model):
     cnh_type = models.CharField(
         'Categoria da CNH', max_length=2, choices=CnhType.choices()
     )
+    owns_vehicle = models.BooleanField('Possui veículo', default=False)
     is_loaded = models.BooleanField('Está carregado', default=False)
     vehicle_type = models.IntegerField(
         'Tipo do caminhão', choices=VehicleType.choices()

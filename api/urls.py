@@ -10,6 +10,10 @@ router.register(
     'drivers-not-loaded', views.NotLoadedDriversViewSet,
     basename='not-loaded-drivers'
 )
+router.register(
+    'drivers-with-own-vehicle', views.OwnVehicleDriversViewSet,
+    basename='own-vehicle-drivers'
+)
 router.register('locations', views.LocationViewSet, basename='locations')
 
 urlpatterns = [

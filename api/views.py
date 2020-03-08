@@ -17,3 +17,8 @@ class LocationViewSet(viewsets.ModelViewSet):
 class NotLoadedDriversViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
     serializer_class = DriverSerializer
     queryset = Driver.objects.filter(is_loaded=False)
+
+
+class OwnVehicleDriversViewSet(mixins.ListModelMixin, viewsets.GenericViewSet):
+    serializer_class = DriverSerializer
+    queryset = Driver.objects.filter(owns_vehicle=True)
