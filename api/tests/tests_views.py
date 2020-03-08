@@ -8,7 +8,7 @@ from rest_framework.test import APIClient
 
 from api.models import Driver
 
-DRIVER_ENDPOINT = reverse('driver')
+DRIVER_ENDPOINT = reverse('drivers-list')
 
 
 class DriversTestCase(TestCase):
@@ -19,7 +19,7 @@ class DriversTestCase(TestCase):
     def test_driver_register(self):
         payload = {
             'name': 'Joãozinho Truckpad',
-            'gender': 'M',
+            'gender': 'MALE',
             'birth_date': self.default_date,
             'cnh_type': 'D',
             'is_loaded': False,
