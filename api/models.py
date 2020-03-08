@@ -34,12 +34,10 @@ class Driver(models.Model):
         'Tipo do caminhão', choices=VehicleType.choices()
     )
     origin = models.ForeignKey(
-        Location, on_delete=models.SET_NULL, related_name='drivers_origin',
-        null=True
+        Location, on_delete=models.CASCADE, related_name='drivers_origin',
     )
     destiny = models.ForeignKey(
-        Location, on_delete=models.SET_NULL, related_name='drivers_destiny',
-        null=True
+        Location, on_delete=models.CASCADE, related_name='drivers_destiny',
     )
 
     class Meta:

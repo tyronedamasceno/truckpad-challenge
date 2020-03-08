@@ -15,6 +15,10 @@ router.register(
     basename='own-vehicle-drivers'
 )
 router.register('locations', views.LocationViewSet, basename='locations')
+router.register(
+    'origin-and-destiny', views.OriginAndDestinyViewSet,
+    basename='origin-and-destiny'
+)
 
 urlpatterns = [
     path('', include(router.urls)),
