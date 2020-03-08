@@ -25,13 +25,16 @@ class DriversTestCase(TestCase):
         self.default_date = datetime(year=1996, month=6, day=26).date()
 
     def test_driver_register(self):
+        location1, location2 = baker.make(Location, 2)
         payload = {
             'name': 'Joãozinho Truckpad',
             'gender': 'MALE',
             'birth_date': self.default_date,
             'cnh_type': 'D',
             'is_loaded': False,
-            'vehicle_type': 5
+            'vehicle_type': 5,
+            'origin': location1.id,
+            'destiny': location2.id
         }
         response = self.client.post(DRIVER_URL, payload)
 
