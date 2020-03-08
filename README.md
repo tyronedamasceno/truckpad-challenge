@@ -24,7 +24,7 @@ You can use the provided credentials to access the admin interface on `https://l
 
 ## Documentation && try it out!
 
-You can find API swagger documentation and do some tests `https://localhost:8000/swagger/`
+You can find API swagger documentation and do some tests [on this page](http://localhost:8000/swagger/)
 
 Also, you can run unit automated tests running the following command
 
