@@ -3,3 +3,4 @@
 flake8==3.7.9
 ipython==7.13.0
 model-bakery==1.1.0
+freezegun==0.3.15
