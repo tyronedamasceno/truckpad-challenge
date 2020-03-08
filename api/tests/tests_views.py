@@ -19,7 +19,7 @@ LOCATION_URL = reverse('locations-list')
 class DriversTestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.default_date = datetime(year=1996, month=6, day=26).astimezone()
+        self.default_date = datetime(year=1996, month=6, day=26).date()
 
     def test_driver_register(self):
         payload = {

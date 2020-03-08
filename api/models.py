@@ -23,7 +23,7 @@ class Location(models.Model):
 
 class Driver(models.Model):
     name = models.CharField('Nome do motorista', max_length=255)
-    birth_date = models.DateTimeField('Data de nascimento')
+    birth_date = models.DateField('Data de nascimento')
     gender = models.CharField('Sexo', max_length=10, choices=Gender.choices())
     cnh_type = models.CharField(
         'Categoria da CNH', max_length=2, choices=CnhType.choices()
