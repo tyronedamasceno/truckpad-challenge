@@ -8,13 +8,15 @@ from model_bakery import baker
 from rest_framework import status
 from rest_framework.test import APIClient
 
+from api.enum import VehicleType
 from api.models import Driver, Location
-from api.serializers import DriverSerializer
+from api.serializers import DriverSerializer, LocationSerializer
 
 DRIVER_URL = reverse('drivers-list')
 NOT_LOADED_DRIVER_URL = reverse('not-loaded-drivers-list')
 OWN_VEHICLE_DRIVER_URL = reverse('own-vehicle-drivers-list')
 LOCATION_URL = reverse('locations-list')
+ORIGINS_AND_DESTINYS_URL = reverse('origin-and-destiny-list')
 
 
 class DriversTestCase(TestCase):
@@ -104,3 +106,31 @@ class LocationsTestCase(TestCase):
         self.assertEqual(response1.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response2.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Location.objects.count(), 1)
+
+    def test_endpoint_listing_origin_and_destiny(self):
+        loc1, loc2, loc3 = baker.make(Location, 3)
+        baker.make(Driver, origin=loc1, destiny=loc2,
+                   vehicle_type=VehicleType.CAMINHAO_TOCO.value)
+        baker.make(Driver, origin=loc1, destiny=loc3,
+                   vehicle_type=VehicleType.CAMINHAO_TRUCK.value)
+        baker.make(Driver, origin=loc3, destiny=loc2,
+                   vehicle_type=VehicleType.CARRETA_SIMPLES.value)
+
+        response = self.client.get(ORIGINS_AND_DESTINYS_URL)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        for vehicle_type in VehicleType:
+            self.assertIn(vehicle_type.name, response.data)
+
+        self.assertIn(
+            LocationSerializer(loc1).data,
+            response.data[VehicleType.CAMINHAO_TOCO.name]
+        )
+        self.assertIn(
+            LocationSerializer(loc1).data,
+            response.data[VehicleType.CAMINHAO_TRUCK.name]
+        )
+        self.assertIn(
+            LocationSerializer(loc3).data,
+            response.data[VehicleType.CARRETA_SIMPLES.name]
+        )
