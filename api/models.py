@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from api.enum import Gender, CnhType, VehicleType
 
@@ -39,10 +40,16 @@ class Driver(models.Model):
     destiny = models.ForeignKey(
         Location, on_delete=models.CASCADE, related_name='drivers_destiny',
     )
+    created_at = models.DateTimeField('Data de registro')
 
     class Meta:
         verbose_name = 'Motorista'
         verbose_name_plural = 'Motoristas'
+
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.created_at = timezone.now()
+        return super(Driver, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.name
