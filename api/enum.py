@@ -7,7 +7,7 @@ choice = namedtuple('Choice', 'name value')
 class ChoiceEnum(Enum):
     @classmethod
     def choices(cls):
-        return [choice(e.name, e.value) for e in cls]
+        return [choice(e.value, e.name) for e in cls]
 
 
 class Gender(ChoiceEnum):

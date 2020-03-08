@@ -25,7 +25,6 @@ class DriversTestCase(TestCase):
             'is_loaded': False,
             'vehicle_type': 5
         }
-
         response = self.client.post(DRIVER_ENDPOINT, payload)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
